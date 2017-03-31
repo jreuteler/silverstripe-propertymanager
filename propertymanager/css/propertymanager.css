@@ -1,0 +1,7 @@
+#location_overview img {
+    border: 0;
+}
+
+.overlay {
+    position: absolute;
+}
