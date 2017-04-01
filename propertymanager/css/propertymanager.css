@@ -10,8 +10,27 @@
     position: absolute;
 }
 
-#klick_overlay img {
+#klick_overlay, #groundplan_klick_overlay {
+    z-index: 2048;
+    overflow: visible;
+}
+
+#klick_overlay img, #groundplan_klick_overlay img {
     background: none;
     border: 0;
+}
 
+
+.desaturate {
+    filter: grayscale(100%);
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+}
+
+area {
+    outline:none;
+
+    outline:#00FF00 dotted 2px;
 }

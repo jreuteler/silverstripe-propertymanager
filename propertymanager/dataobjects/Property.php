@@ -25,6 +25,20 @@ class Property extends DataObject
         return $fields;
     }
 
+   
+
+
+
+
+
+    public function FloorTitle()
+    {
+        if($this->Floor() ) {
+            return $this->Floor()->Title;
+        }
+
+        return '';
+    }
 
     public function BuildingID()
     {

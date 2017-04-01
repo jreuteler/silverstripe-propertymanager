@@ -1,9 +1,14 @@
+<% include PropertyList %>
+
+
 <% include EventTooltipConfiguration %>
 
 
 <style>
 
-    img[usemap] { border: 1px solid red; }
+    img[usemap] {
+        border: 1px solid red;
+    }
 
         $DynamicCSS
 
@@ -12,14 +17,116 @@
 
 <script type='text/javascript'>
 
-    jQuery('.map').maphilight();
+    //jQuery('.map').maphilight();
 
 
+    jQuery('area').click(function( event ) {
+        event.preventDefault();
+    });
 
-    var floorImageMaps = $FloorImageMapsJSON;
+
+    /**
+
+    var test = jQuery('area.floor');
+
+    console.log(test.length);
+
+    for (var prop in test ) {
+
+        console.log(prop);
+
+    }
+     **/
+
+         var zIndex = 2048;
+
+    // var floorImageMaps = $FloorImageMapsJSON;
 
     var buildings = $BuildingsJSON;
     var buildingFloors = $BuildingFloorsJSON;
+
+    function resetFloorLayer(floorID) {
+
+
+        jQuery('#floor' + floorID).addClass('offset');
+
+    }
+
+
+    function getAffectedFloors(buildingID, triggeredFloorID) {
+
+        var affectedFloors = [];
+        var triggeredFloorFound = false;
+
+        //console.log("getAffectedFloors (" + buildingID +  ", " + triggeredFloorID + ")");
+
+        fLen = buildingFloors[buildingID].length;
+
+        for (i = 0; i < fLen; i++) {
+
+            let floorID = buildingFloors[buildingID][i];
+
+            if (floorID != 0) {
+                if (triggeredFloorFound) {
+
+                    var floorLayer = jQuery('#floor_' + floorID);
+                    affectedFloors.push(floorID);
+                }
+            }
+
+            if (floorID == triggeredFloorID) {
+
+                //console.log("floorID: " + floorID);
+
+                triggeredFloorFound = true;
+            }
+        }
+
+
+        /**
+
+         for (var floorID in buildingFloors[buildingID]) {
+
+            console.log("floorID: " + floorID);
+            // TODO: find reasons for 0 values (null?)
+            if(floorID != 0) {
+                if(triggeredFloorFound){
+
+                    var floorLayer = jQuery('#floor_'+floorID);
+                    affectedFloors.push(floorLayer);
+                }
+            }
+
+            if(floorID == triggeredFloorID) {
+                triggeredFloorFound = true;
+            }
+
+        }
+         **/
+
+        function updateImageMap(buildingID, triggeredFloorID) {
+
+        }
+
+
+        /**
+         for(i = 0; i < buildingFloors[buildingID].length; i++ ) {
+
+            if(triggeredFloorFound){
+                affectedFloors.push(jQuery('floor_'+buildingFloors[buildingID]));
+            }
+
+            if(buildingFloors[buildingID] == triggeredFloorID) {
+                triggeredFloorFound = true;
+            }
+
+
+        }
+         **/
+
+        console.log(affectedFloors);
+        return affectedFloors;
+    }
 
     // var buildingFloorsJSON = JSON.parse(buildingFloors);
 
@@ -41,11 +148,153 @@
     })
     */
 
-    $('map area.floor').data('ma-test', 'active');
-    $('map area.floor').css('border', '1px solod red');
-
 
     $('map area.floor').entwine({
+
+        /**
+         onmatch: function(){
+            this.css({height: 45, width: 200, clear: 'left'});
+        },
+         **/
+
+        showfloor: function () {
+
+
+            //this.animate({zIndex: 128}, {queue: false})
+
+
+
+            // TODO: reset z-index on imagemap
+
+            // reset image maps of open floors
+            console.log('reset image maps');
+
+            jQuery('#building_'+this.data("building-id") +' area.floor.offset').each(function() {
+
+                jQuery( this ).attr('coords', jQuery( this ).data('initial-coords'));
+            });
+
+
+
+            console.log('floor clicked, #' + this.data("floor-id"));
+
+            this.coords = this.data("offset-coords");
+
+            var floorsToAnimate = getAffectedFloors(this.data("building-id"), this.data("floor-id"));
+
+            floorsToAnimate.forEach(function (item, index, array) {
+                jQuery('#floor_'+item).addClass('offset');
+                let clickarea = jQuery('#floor_clickarea_'+item);
+
+                clickarea.addClass('offset');
+                clickarea.attr('coords', clickarea.data('offset-coords'));
+            });
+
+            jQuery('#building_' + this.data("building-id")).addClass('offset');
+
+            /*
+            for (var floor in floorsToAnimate) {
+                //floor.addClass('moved');
+                console.log('floor value: ' + floor);
+                console.log('floor value: ' + floorsToAnimate[floor]);
+
+            }
+            **/
+
+            console.log(this.data("building-id"));
+            console.log(this.data("floor-id"));
+            //jQuery('#'+this.data("floor-layer-id")).addClass('moved');
+
+            //this.addClass('moved');
+            //this.animate({height: 100}, {queue: false})
+        },
+        hidefloor: function () {
+            //this.removeClass('moved');
+
+            this.animate({zIndex: this.data("z-index")}, {queue: false})
+            jQuery('#building_' + this.data("building-id") + ' .floor_overlay').removeClass('offset');
+            jQuery('#building_' + this.data("building-id")).removeClass('offset');
+
+            //this.animate({height: 45}, {queue: false})
+        },
+
+
+        desaturate: function() {
+
+            jQuery('#floor_' + this.data("floor-id")).addClass('desaturate');
+
+            //this.animate({height: 100}, {queue: false})
+        },
+        saturate: function() {
+
+            jQuery('#floor_' + this.data("floor-id")).removeClass('desaturate');
+
+            //this.animate({height: 45}, {queue: false})
+        },
+
+
+        onclick: function () {
+            this.showfloor();
+        },
+        ondblclick: function () {
+            this.hidefloor();
+        },
+
+        onmouseenter: function(){
+            this.desaturate();
+        },
+        onmouseleave: function(){
+            this.saturate();
+        }
+    })
+
+    /**
+     $('ul.horizontal li').entwine({
+        onmatch: function(){
+            this.css({height: 100, width: 45, clear: 'none'});
+        },
+        showfloor: function(){
+            this.animate({width: 200}, {queue: false})
+        },
+        hidefloor: function(){
+            this.animate({width: 45}, {queue: false})
+        }
+    })
+
+     $('ul.lightens li').entwine({
+        Highlight: '#ced',
+
+        onmouseenter: function(){
+            this.animate({backgroundColor: this.getHighlight()}, {queue: false});
+            this._super();
+        },
+        onmouseleave: function(){
+            this.animate({backgroundColor: '#ccc'}, {queue: false});
+            this._super();
+        }
+    })
+     **/
+
+
+    //   this.imageMap.empty();
+    /***
+     var area = new Element('area', {
+                    'shape': 'poly',
+                    'coords': pointList,
+                    'onmouseover': '',
+                    'onclick': 'showFloor(\''+floorId+'\')',
+                    'class': 'floorTooltip',
+                    'title': floorName,
+                    'rel': 'Anklicken für Details',
+                    'href': '#',
+                    'alt': 'alt text'
+                });
+
+     */
+
+
+    /**
+     $('map area.floor').entwine({
         onclick: function (e) {
             var id = this.val(),
 
@@ -56,24 +305,13 @@
 
             console.log("id: " + this.id);
             console.log("buildingID: " + buildingID + " / floorID: " + floorID);
-            //console.log(buildingFloors[1].length);
 
 
             var id = this.attr('id');
 
             console.log(id);
 
-            /**
-             for(var i = 0; i < buildingFloors[buildingID].length; i++) {
-                //console.log(buildingFloors[1]);
-                console.log('loop floor #'.buildingFloors[buildingID][i]);
-            }
-
-             **/
-
-
-            var roofElement = jQuery('#roof_' + buildingID);
-
+              var roofElement = jQuery('#roof_' + buildingID);
 
             if (this.hasClass('active')) {
 
@@ -87,8 +325,6 @@
             } else {
 
                 var json = buildingFloors[buildingID];
-
-
 
                 roofElement.addClass('moved');
 
@@ -119,30 +355,6 @@
 
                     }
                 }
-
-
-                // TODO:
-                /**
-                 * get all "moved" floors and replace imagemap
-                 */
-
-                //   this.imageMap.empty();
-                /***
-                 var area = new Element('area', {
-                    'shape': 'poly',
-                    'coords': pointList,
-                    'onmouseover': '',
-                    'onclick': 'showFloor(\''+floorId+'\')',
-                    'class': 'floorTooltip',
-                    'title': floorName,
-                    'rel': 'Anklicken für Details',
-                    'href': '#',
-                    'alt': 'alt text'
-                });
-
-                 */
-
-
                 this.addClass('active');
 
             }
@@ -152,6 +364,9 @@
         }
     });
 
+
+     **/
+
 </script>
 
 <div id="location_overview"
@@ -159,7 +374,8 @@
 
     <% loop $BuildingsData %>
 
-        <div id="building_{$ID}" class="building_overlay overlay" style="left: {$BuildingOffsetX}px; top: {$BuildingOffsetY}px;">
+        <div id="building_{$ID}" class="building_overlay overlay"
+             style="left: {$BuildingOffsetX}px; top: {$BuildingOffsetY}px;">
             <!--
             Building: $Title, $ID
             -->
@@ -174,7 +390,7 @@
                  style="background-image: url('$RoofImage.URL'); width: {$RoofImage.Width}px; height: {$RoofImage.Height}px; left: {$RoofOffsetX}px ; top: {$RoofOffsetY}px; z-index: 1024;"></div>
 
             <map id="imageMap_{$ID}" name="imageMap_{$ID}" style="z-index: 1;">
-                <% loop $Floors %>
+                <% loop $Floors.Reverse %>
 
                     <!--
                     onmouseover="showFloor('$ID')" onmouseout="hideFloor('$ID')" onclick="showFloorDetails('$ID')"
@@ -184,9 +400,13 @@
                           coords="$OverviewImage.ImageMapCoordinates"
                           data-building-id="$BuildingID"
                           data-floor-id="$ID"
-                          about="data-tooltip-content="#tooltip_content_floor_{$ID}"
-                          href="#" alt="$Title"
-                          title="$Title"/>
+                          data-floor-layer-id="floor_{$ID}"
+                          data-z-index="{$SortOrder}"
+                          data-initial-coords="$OverviewImageMapCoordinates"
+                          data-offset-coords="$OverviewImageMapCoordinatesOffset"
+                          about="data-tooltip-content=" #tooltip_content_floor_{$ID}"
+                    href="#" alt="$Title"
+                    title="$Title" />
 
                 <% end_loop %>
             </map>
@@ -194,7 +414,7 @@
             <% loop $Floors %>
 
                 <div id="floor_{$ID}" class="overlay floor_overlay"
-                     style="background-image: url('$OverviewImage.URL'); width: {$OverviewImage.Width}px; height: {$OverviewImage.Height}px; z-index: $ZIndex;">
+                     style="background-image: url('$OverviewImage.URL'); width: {$OverviewImage.Width}px; height: {$OverviewImage.Height}px; z-index: {$ZIndex};">
 
                     <!--
                     Floor: $Title

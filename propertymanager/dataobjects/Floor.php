@@ -42,9 +42,24 @@ class Floor extends DataObject
         return 0;
     }
 
+    public function OverviewImageMapCoordinates()
+    {
+        if($this->OverviewImage()) {
+            return $this->OverviewImage()->ImageMapCoordinates;
+        }
+
+        return '';
+    }
+
+    public function OverviewImageMapCoordinatesOffset()
+    {
+        return  ImageMapHelper::calculateOffset($this->OverviewImageMapCoordinates(), $this->Building()->AnimationOffsetX, $this->Building()->AnimationOffsetY);
+        // $this->OverviewImage->ImageMapCoordinates;
+    }
+
 
     public function ZIndex() {
-        return $this->SortOrder;
+        return $this->SortOrder+128;
     }
 
 }

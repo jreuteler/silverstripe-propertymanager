@@ -102,6 +102,11 @@ class InteractivePropertyPage_Controller extends Page_Controller
 
 
         /**
+        Requirements::css('https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css');
+        Requirements::javascript('https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js');
+        **/
+
+    /**
          * $timezone = DateHelper::getUserTimezone($request);
          *
          * $timeframeManager = new TimeframeManager($timezone, $this->AllowTimeframeNavigation);
@@ -129,7 +134,7 @@ class InteractivePropertyPage_Controller extends Page_Controller
          *
          **/
 
-        $floorImageMaps = array();
+        //$floorImageMaps1 = array();
         $buildings = array();
         $buildingFloors = array();
 
@@ -161,25 +166,31 @@ class InteractivePropertyPage_Controller extends Page_Controller
 
             $dynamicCSS .= '#building_' . $buildingID . '.building_overlay { left: ' . $building->BuildingOffsetX . 'px; top: ' . $building->BuildingOffsetY . ' } ';
 
-            $dynamicCSS .= '#building_' . $buildingID . ' .floor_overlay.moved{
+            $dynamicCSS .= '#building_' . $buildingID . ' .floor_overlay.offset{
                 left: ' . $building->AnimationOffsetX . 'px;  top: ' . $building->AnimationOffsetY . 'px; } ';
 
 
             $dynamicCSS .= '#roof_' . $buildingID . '.building_overlay { left: ' . $building->RoofOffsetX . 'px; top: ' . $building->RoofOffsetY . ' } ';
 
-            $dynamicCSS .= '#roof_' . $buildingID . '.roof_overlay.moved{
+            $dynamicCSS .= '#building_' . $buildingID . '.offset .roof_overlay {
                 left: ' . $building->RoofAnimationOffsetX . 'px !important;  top: ' . $building->RoofAnimationOffsetY . 'px !important; } ';
 
+            /**
+            $dynamicCSS .= '#roof_' . $buildingID . '.roof_overlay.offset{
+                left: ' . $building->RoofAnimationOffsetX . 'px !important;  top: ' . $building->RoofAnimationOffsetY . 'px !important; } ';
+            **/
 
             foreach ($building->Floors() as $floor) {
 
                 @$buildingFloors[$buildingID][] = array($floor->ID);
 
+                /**
                 $floorImageMaps[$buildingID][$floor->ID] = array(
                     'default' => $floor->OverviewImage()->ImageMapCoordinates,
-                    'moved' => ImageMapHelper::calculateOffset($floor->OverviewImage()->ImageMapCoordinates, $building->AnimationOffsetX, $building->AnimationOffsetY)
+                    'offset' => ImageMapHelper::calculateOffset($floor->OverviewImage()->ImageMapCoordinates, $building->AnimationOffsetX, $building->AnimationOffsetY)
 
                 );
+                **/
             }
 
         }
@@ -193,10 +204,6 @@ class InteractivePropertyPage_Controller extends Page_Controller
         $buildingsJSON = json_encode($buildings);
         $buildingFloorsJSON = json_encode($buildingFloors);
 
-        $floorImageMapsJSON = json_encode($floorImageMaps);
-
-
-        var_dump($floorImageMapsJSON);
 
 
         $data = array(
@@ -211,7 +218,6 @@ class InteractivePropertyPage_Controller extends Page_Controller
             'BuildingsJSON' => $buildingsJSON,
             'BuildingFloorsJSON' => $buildingFloorsJSON,
 
-            'FloorImageMapsJSON' => $floorImageMapsJSON,
 
             'BuildingsData' => $this->Location()->Buildings()
 
