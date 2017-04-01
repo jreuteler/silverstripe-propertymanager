@@ -5,8 +5,8 @@ class Floor extends DataObject
 
     public static $db = array(
         'Title' => 'Varchar',
-        'FloorId' => 'Int',
         'Text' => 'Text',
+        'SortOrder'=>'Int'
     );
 
     public static $has_one = array(
@@ -18,8 +18,10 @@ class Floor extends DataObject
         'Properties' => 'Property',
     );
 
+    public static $default_sort='SortOrder';
+
+
     private static $summary_fields = array(
-        'FloorId',
         'Title',
         'PropertyCount',
     );
@@ -42,7 +44,7 @@ class Floor extends DataObject
 
 
     public function ZIndex() {
-        return $this->FloorId;
+        return $this->SortOrder;
     }
 
 }

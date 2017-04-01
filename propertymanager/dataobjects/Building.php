@@ -8,8 +8,13 @@ class Building extends DataObject
         'Text' => 'Text',
         'BuildingOffsetX' => 'Int',
         'BuildingOffsetY' => 'Int',
+        'AnimationOffsetX' => 'Int',
+        'AnimationOffsetY' => 'Int',
+
         'RoofOffsetX' => 'Int',
         'RoofOffsetY' => 'Int',
+        'RoofAnimationOffsetX' => 'Int',
+        'RoofAnimationOffsetY' => 'Int',
     );
 
     public static $has_one = array(
@@ -33,6 +38,15 @@ class Building extends DataObject
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
+
+
+        $conf=GridFieldConfig_RelationEditor::create(10);
+        $conf->addComponent(new GridFieldSortableRows('SortOrder'));
+
+        $fields->removeByName('Floors');
+
+        $fields->addFieldToTab('Root.Main', new GridField('Floors', 'Floors', $this->Floors(), $conf));
+
         return $fields;
     }
 

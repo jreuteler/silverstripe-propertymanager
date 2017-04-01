@@ -1,7 +1,17 @@
+#location_overview {
+    position: absolute;
+}
+
 #location_overview img {
     border: 0;
 }
 
 .overlay {
     position: absolute;
+}
+
+#klick_overlay img {
+    background: none;
+    border: 0;
+
 }

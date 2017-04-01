@@ -26,5 +26,14 @@ class Property extends DataObject
     }
 
 
+    public function BuildingID()
+    {
+        if($this->Floor() && $this->Floor()->Building() ) {
+            return $this->Floor()->Building()->ID;
+        }
+
+        return 0;
+    }
+
 
 }
