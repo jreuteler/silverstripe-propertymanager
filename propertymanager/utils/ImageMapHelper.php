@@ -1,9 +1,18 @@
 <?php
 
 
+/**
+ * Class ImageMapHelper
+ */
 class ImageMapHelper
 {
 
+    /**
+     * @param $imageMapCoordinates
+     * @param int $xOffset
+     * @param int $yOffset
+     * @return string
+     */
     public static function calculateOffset($imageMapCoordinates, $xOffset = 0, $yOffset = 0)
     {
         $imageMapCoordinatesOffset = '';
@@ -18,10 +27,9 @@ class ImageMapHelper
             }
         }
 
-       $imageMapCoordinatesOffset = rtrim($imageMapCoordinatesOffset, ',');
+        $imageMapCoordinatesOffset = rtrim($imageMapCoordinatesOffset, ',');
 
 
         return $imageMapCoordinatesOffset;
-
     }
 }
