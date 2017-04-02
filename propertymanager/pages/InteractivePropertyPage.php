@@ -91,7 +91,6 @@ class InteractivePropertyPage_Controller extends Page_Controller
         Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.js');
         Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery-entwine/dist/jquery.entwine-dist.js');
         Requirements::javascript(PROPERTYMANAGER_DIR . '/vendor/tooltipster/tooltipster.bundle.min.js');
-        Requirements::javascript(PROPERTYMANAGER_DIR . '/vendor/maphilight/jquery.maphilight.min.js');
         Requirements::css(PROPERTYMANAGER_DIR . '/vendor/tooltipster/tooltipster.bundle.min.css');
         Requirements::css(PROPERTYMANAGER_DIR . "/css/propertymanager.css");
 
@@ -125,24 +124,14 @@ class InteractivePropertyPage_Controller extends Page_Controller
             $dynamicCSS .= '#building-' . $buildingID . ' .roof-overlay.offset {
                 left: ' . $building->RoofAnimationOffsetX . 'px !important;  top: ' . $building->RoofAnimationOffsetY . 'px !important; } ';
 
-
-
             foreach ($building->Floors() as $floor) {
                 @$buildingFloors[$buildingID][] = array($floor->ID);
             }
 
         }
 
-
-        /**
-         * var_dump($buildings);
-         * var_dump($buildingFloors);
-         **/
-
         $buildingsJSON = json_encode($buildings);
         $buildingFloorsJSON = json_encode($buildingFloors);
-
-
 
         $data = array(
             'PROPERTYMANAGER_DIR' => PROPERTYMANAGER_DIR,
@@ -150,12 +139,10 @@ class InteractivePropertyPage_Controller extends Page_Controller
             'LocationBackgroundURL' => $this->Location()->BackgroundImage()->URL,
             'LocationBackgroundWidth' => $this->Location()->BackgroundImage()->getWidth(),
             'LocationBackgroundHeight' => $this->Location()->BackgroundImage()->getHeight(),
-
-
+            
             'DynamicCSS' => $dynamicCSS,
             'BuildingsJSON' => $buildingsJSON,
             'BuildingFloorsJSON' => $buildingFloorsJSON,
-
 
             'BuildingsData' => $this->Location()->Buildings()
 
