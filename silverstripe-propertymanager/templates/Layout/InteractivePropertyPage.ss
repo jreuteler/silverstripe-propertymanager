@@ -41,7 +41,7 @@
     }
 
 
-    $('map area.floor').entwine({
+    $('.floor.click-area').entwine({
 
         showfloor: function () {
 
@@ -143,7 +143,30 @@
         }
     })
 
+
+
+
 </script>
+
+
+<div id="location-navigation">
+    <ul>
+    <% loop $BuildingsData %>
+        <li>$Title</li>
+    <% loop $Floors %>
+        <li class="floor click-area" data-building-id="$BuildingID" data-floor-id="$ID">$Title            </li>
+
+        <!--
+        <% loop $Properties %>
+            <li>$Title</li>
+        <% end_loop %>
+        -->
+
+        <% end_loop %>
+    <% end_loop %>
+    </ul>
+
+</div>
 
 <div id="location-overview"
      style="background-image: url('$LocationBackground.URL'); width:{$LocationBackground.Width}px; height: {$LocationBackground.Height}px;">
@@ -175,7 +198,7 @@
                               title="$Title"/>
                     <% end_loop %>
 
-                    <area id="floor-clickarea-{$ID}" class="floor" shape="poly"
+                    <area id="floor-clickarea-{$ID}" class="floor click-area" shape="poly"
                           coords="$OverviewImageMapCoordinates"
                           data-building-id="$BuildingID"
                           data-floor-id="$ID"
