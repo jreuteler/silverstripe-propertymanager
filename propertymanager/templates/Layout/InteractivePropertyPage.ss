@@ -1,228 +1,185 @@
-<% include PropertyList %>
-
-
 <% include EventTooltipConfiguration %>
 
 
 <style>
-
-    img[usemap] {
-        border: 1px solid red;
-    }
-
         $DynamicCSS
-
 </style>
 
 
 <script type='text/javascript'>
 
-    //jQuery('.map').maphilight();
-
-
-    jQuery('area').click(function (event) {
-        event.preventDefault();
+    // disable click on imagemap areas
+    $(function () {
+        jQuery('#imagemap area').on('click', function (e) {
+            e.preventDefault();
+        });
     });
 
-    var zIndex = 2048;
-
-    // var floorImageMaps = $FloorImageMapsJSON;
-
-    var buildings = $BuildingsJSON;
+    // contains a list of floors grouped by building
     var buildingFloors = $BuildingFloorsJSON;
-
-
-    function resetBuildingLayers(buildingID) {
-
-        jQuery('#building-'+buildingID+' area.floor.active').removeClass('active');
-        jQuery('#building-'+buildingID+' .property-klick-overlay.active').removeClass('active');
-
-    }
-
-    function resetFloorLayer(floorID) {
-
-        jQuery('#floor-' + floorID).addClass('offset');
-
-    }
-
 
     function getAffectedFloors(buildingID, triggeredFloorID) {
 
         var affectedFloors = [];
         var triggeredFloorFound = false;
-
         fLen = buildingFloors[buildingID].length;
 
         for (i = 0; i < fLen; i++) {
 
             let floorID = buildingFloors[buildingID][i];
-
             if (floorID != 0) {
                 if (triggeredFloorFound) {
-
-                    var floorLayer = jQuery('#floor-' + floorID);
                     affectedFloors.push(floorID);
                 }
             }
-
             if (floorID == triggeredFloorID) {
-
-                //console.log("floorID: " + floorID);
-
                 triggeredFloorFound = true;
             }
         }
 
-        function updateImageMap(buildingID, triggeredFloorID) {
-
-        }
-
-
-        console.log(affectedFloors);
         return affectedFloors;
     }
 
 
     $('map area.floor').entwine({
 
-        /**
-         onmatch: function(){
-            this.css({height: 45, width: 200, clear: 'left'});
-        },
-         **/
-
         showfloor: function () {
 
-            //this.animate({zIndex: 128}, {queue: false})
-            // TODO: reset z-index on imagemap
+            var buildingID = this.data('building-id');
+            var floorID = this.data('floor-id');
+            var isActive = this.hasClass('active');
 
-            /**
-            if(this.hasClass('active')) {
-
-                resetBuildingLayers(this.data('building-id'));
-                return;
-
-
-            } else {
-                this.addClass('active');
-            }
-            ***/
-
-            var alreadOpen = false
-
-            if(this.hasClass('active')) {
-
-                // layer already open
-                alreadOpen = true;
-            }
-
-            // reset all active floors
-            jQuery('#building-'+this.data('building-id')+' area.floor.active').removeClass('active');
-
-
-            //this.addClass('active');
-
-
-            // reset property-klick-overlay
-            jQuery('#building-'+this.data('building-id')+' .property-klick-overlay.active').removeClass('active');
-            jQuery('#floor-'+this.data('floor-id')+' .property-click-overlay').addClass('active');
-
-            // reset image maps of open floors
-            jQuery('#building-' + this.data("building-id") + ' area.floor.offset').each(function () {
-
+            // replace all offset imagemap coordinates with the initial (non-offset) ones
+            jQuery('#building-' + buildingID + ' area.floor.offset').each(function () {
                 jQuery(this).attr('coords', jQuery(this).data('initial-coords'));
             });
 
-
-            this.coords = this.data("offset-coords");
-
-            var floorsToAnimate = getAffectedFloors(this.data("building-id"), this.data("floor-id"));
-
-            floorsToAnimate.forEach(function (item, index, array) {
-                jQuery('#floor-' + item).addClass('offset');
-                let clickarea = jQuery('#floor-clickarea-' + item);
-
-                clickarea.addClass('offset');
-                clickarea.attr('coords', clickarea.data('offset-coords'));
+            // delete coords of active properties (required because a map area can't be individually de-/activated with CSS block:none;)
+            jQuery('area.property.active').each(function () {
+                jQuery(this).removeClass('active');
+                jQuery(this).attr('coords', '');
             });
 
-            jQuery('#building-' + this.data("building-id")).addClass('offset');
+            // reset all active/offset elements
+            jQuery('#roof-' + buildingID + ' .offset').removeClass('offset'); // reset roof offset
+            jQuery('#building-' + buildingID + ' .offset').removeClass('offset'); // reset offset of all floors
+            jQuery('#building-' + buildingID + ' .active').removeClass('active'); // reset any floor marked as active
 
 
-            console.log(this.data("building-id"));
-            console.log(this.data("floor-id"));
+            if (!isActive) {
 
-            //this.animate({height: 100}, {queue: false})
+                this.addClass('active');
+
+                // set roof as offset
+                jQuery('#roof-' + buildingID).addClass('offset');
+
+                // set selected floor as active
+                jQuery('#floor-' + floorID).addClass('active');
+
+                // activate floor click layer
+                jQuery('#floor-' + floorID + ' .property-click-overlay').addClass('active');
+
+                // set coords of properties (required because a map area can't be individually de-/activated with CSS block:none;)
+                jQuery('area.property.floor-' + floorID).each(function () {
+                    jQuery(this).addClass('active');
+                    jQuery(this).attr('coords', jQuery(this).data('initial-coords'));
+                });
+
+                //this.coords = this.data("offset-coords");
+                var floorsToOffset = getAffectedFloors(buildingID, floorID);
+                floorsToOffset.forEach(function (item, index, array) {
+
+                    // set offset class on floor layer
+                    jQuery('#floor-' + item).addClass('offset');
+
+                    let clickarea = jQuery('#floor-clickarea-' + item);
+
+                    // set offset class on clickarea
+                    clickarea.addClass('offset');
+
+                    // replace coordinates with offset ones
+                    clickarea.attr('coords', clickarea.data('offset-coords'));
+                });
+
+            }
+
         },
-        hidefloor: function () {
-
-            this.animate({zIndex: this.data("z-index")}, {queue: false})
-            jQuery('#building-' + this.data("building-id") + ' .floor-overlay').removeClass('offset');
-            jQuery('#building-' + this.data("building-id")).removeClass('offset');
-
-            //this.animate({height: 45}, {queue: false})
-        },
-
 
         desaturate: function () {
-
-            jQuery('#floor-' + this.data("floor-id")).addClass('desaturate');
-            //this.animate({height: 100}, {queue: false})
+            jQuery('#floor-' + this.data('floor-id')).removeClass('saturate');
         },
         saturate: function () {
-
-            jQuery('#floor-' + this.data("floor-id")).removeClass('desaturate');
-            //this.animate({height: 45}, {queue: false})
+            jQuery('#floor-' + this.data('floor-id')).addClass('saturate');
         },
 
 
         onclick: function () {
             this.showfloor();
         },
-        ondblclick: function () {
-            this.hidefloor();
-        },
+
         onmouseenter: function () {
-            this.desaturate();
+            this.saturate();
         },
         onmouseleave: function () {
-            this.saturate();
+            this.desaturate();
         }
     })
 
+
+    $('map area.property').entwine({
+
+        desaturate: function () {
+            jQuery('#property-' + this.data('property-id')).removeClass('saturate');
+        },
+        saturate: function () {
+            jQuery('#property-' + this.data('property-id')).addClass('saturate');
+        },
+
+        onmouseenter: function () {
+            this.saturate();
+        },
+        onmouseleave: function () {
+            this.desaturate();
+        }
+    })
 
 </script>
 
 <div id="location-overview"
      style="background-image: url('$LocationBackground.URL'); width:{$LocationBackground.Width}px; height: {$LocationBackground.Height}px;">
 
+    <div class="floor-click-overlay overlay" style="z-index: 2048;">
+        <img class="map" width="$LocationBackgroundWidth"
+             height="{$LocationBackground.Height}" src="$Top.PROPERTYMANAGER_DIR/assets/images/spacer.gif"
+             usemap="#imagemap">
+    </div>
+
+
     <% loop $BuildingsData %>
 
         <div id="building-{$ID}" class="building-overlay overlay"
              style="left: {$BuildingOffsetX}px; top: {$BuildingOffsetY}px;">
-            <!--
-            Building: $Title, $ID
-            -->
-
-            <!-- id="floor-click-overlay" -->
-            <div class="floor-click-overlay overlay" style="z-index: 2048;">
-                <img class="map" width="$Top.LocationBackgroundWidth"
-                     height="{$Top.LocationBackground.Height}" src="$Top.PROPERTYMANAGER_DIR/assets/images/spacer.gif"
-                     usemap="#imagemap-{$ID}">
-            </div>
 
             <div id="roof-{$ID}" class="overlay roof-overlay"
                  style="background-image: url('$RoofImage.URL'); width: {$RoofImage.Width}px; height: {$RoofImage.Height}px; left: {$RoofOffsetX}px ; top: {$RoofOffsetY}px; z-index: 1024;"></div>
 
-            <map id="imagemap-{$ID}" name="imagemap-{$ID}" style="z-index: 1;">
+            <map id="imagemap" name="imagemap" style="z-index: 1;">
                 <% loop $Floors.Reverse %>
 
+                    <% loop $Properties %>
+                        <area id="property-clickarea-{$ID}" class="property floor-{$FloorID}" shape="poly"
+                              coords=""
+                              data-initial-coords="$OverviewImageMapCoordinates"
+                              data-property-id="$ID"
+                              href="#" alt="$Title"
+                              title="$Title"/>
+                    <% end_loop %>
+
                     <area id="floor-clickarea-{$ID}" class="floor" shape="poly"
-                          coords="$OverviewImage.ImageMapCoordinates"
+                          coords="$OverviewImageMapCoordinates"
                           data-building-id="$BuildingID"
                           data-floor-id="$ID"
-                          data-floor-layer-id="floor_{$ID}"
-                          data-z-index="{$SortOrder}"
+                          data-floor-layer-id="floor-{$ID}"
                           data-initial-coords="$OverviewImageMapCoordinates"
                           data-offset-coords="$OverviewImageMapCoordinatesOffset"
                           about="data-tooltip-content=" #tooltip_content_floor_{$ID}"
@@ -235,27 +192,15 @@
             <% loop $Floors %>
 
                 <div id="floor-{$ID}" class="overlay floor-overlay"
-                     style="background-image: url('$OverviewImage.URL'); width: {$OverviewImage.Width}px; height: {$OverviewImage.Height}px; z-index: {$ZIndex};">
-
-                    <!--
-                    Floor: $Title
-                    -->
+                     style="background-image: url('$OverviewImage.URL'); width: {$OverviewImage.Width}px; height: {$OverviewImage.Height}px; z-index: {$ZIndex};"
+                     data-z-index="{$ZIndex}">
 
                     <% loop $Properties %>
-                        <div id="property_{$ID}" class="overlay property-overlay"
+                        <div id="property-{$ID}" class="overlay property-overlay"
                              style="background-image: url('$OverviewImage.URL'); width: {$OverviewImage.Width}px; height: {$OverviewImage.Height}px;">
 
                         </div>
                     <% end_loop %>
-
-
-                    <div class="property-click-overlay overlay" style="z-index: 2048;">
-                        <img class="map" width="$Top.LocationBackgroundWidth"
-                             height="{$Top.LocationBackground.Height}"
-                             src="$Top.PROPERTYMANAGER_DIR/assets/images/spacer.gif"
-                             usemap="#property-imagemap-{$ID}">
-                    </div>
-
 
                 </div>
 
@@ -267,23 +212,3 @@
 </div>
 
 
-<!-- create property image maps per floor -->
-<% loop $BuildingsData %>
-    <% loop $Floors %>
-        <map id="property-imagemap-{$ID}" name="property-imagemap-{$ID}" style="z-index: 1;">
-            <% loop $Properties %>
-                <area id="property-clickarea-{$ID}" class="property" shape="poly"
-                      coords="$OverviewImage.ImageMapCoordinates"
-                      data-building-id="$BuildingID"
-                      data-floor-id="$ID"
-                      data-floor-layer-id="floor_{$ID}"
-                      data-z-index="{$SortOrder}"
-                      data-initial-coords="$OverviewImageMapCoordinates"
-                      data-offset-coords="$OverviewImageMapCoordinatesOffset"
-                      about="data-tooltip-content=" #tooltip_content_floor_{$ID}"
-                href="#" alt="$Title"
-                title="$Title" />
-            <% end_loop %>
-        </map>
-    <% end_loop %>
-<% end_loop %>
