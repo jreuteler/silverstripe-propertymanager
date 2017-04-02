@@ -1,7 +1,7 @@
 <?php
 
 global $project;
-$project = 'mysite';
+$project = 'propertymanager';
 
 global $database;
 $database = '';

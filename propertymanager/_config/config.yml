@@ -1,5 +1,5 @@
 ---
-Name: mysite
+Name: propertymanager
 After:
   - 'framework/*'
   - 'cms/*'
