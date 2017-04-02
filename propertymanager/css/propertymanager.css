@@ -6,38 +6,21 @@
     border: 0;
 }
 
+/**
+transition: top 500ms cubic-bezier(0.420, 0.000, 1.000, 1.000);
+transition: left 500ms cubic-bezier(0.420, 0.000, 1.000, 1.000);
+transition: opacity 1000ms ease-in;
+transition: z-index 10ms ease-in;
+transition: color 1000ms ease-in;
+*/
+
 .overlay {
     position: absolute;
+    top: 0px;
+    left: 0px;
 }
 
-
-/***
-TODO: make klick_overlay class instead of id to allow multiple buildings at the same time
-
-**/
-
-.floor-click-overlay, .property-klick-overlay {
-    z-index: 2048;
-    overflow: visible;
-}
-
-.property-click-overlay {
-    display: none;
-}
-
-.property-click-overlay.active {
-    display: block;
-}
-
-
-
-.floor-click-overlay img, .property-klick-overlay img {
-    background: none;
-    border: 0;
-}
-
-
-.desaturate {
+.floor-overlay, .property-overlay {
     filter: grayscale(100%);
     -webkit-filter: grayscale(100%);
     -moz-filter: grayscale(100%);
@@ -45,8 +28,62 @@ TODO: make klick_overlay class instead of id to allow multiple buildings at the 
     -o-filter: grayscale(100%);
 }
 
-area {
-    outline:none;
-
-    outline:#00FF00 dotted 2px;
+.floor-overlay, .roof-overlay {
+    transition: top 300ms cubic-bezier(0.420, 0.000, 1.000, 1.000),
+    left 300ms cubic-bezier(0.420, 0.000, 1.000, 1.000);
 }
+
+.floor-overlay.offset, .roof-overlay.offset {
+    transition: top 300ms cubic-bezier(0.420, 0.000, 1.000, 1.000),
+    left 300ms cubic-bezier(0.420, 0.000, 1.000, 1.000);
+}
+
+.property-overlay {
+    opacity: 0;
+    transition: opacity 300ms cubic-bezier(0.420, 0.000, 1.000, 1.000);
+}
+
+.floor-overlay.active .property-overlay {
+    opacity: 0.8;
+    transition: opacity 600ms cubic-bezier(0.420, 0.000, 1.000, 1.000);
+}
+
+.floor-overlay.active, .property-overlay.active {
+    filter: grayscale(0%);
+    -webkit-filter: grayscale(0%);
+    -moz-filter: grayscale(0%);
+    -ms-filter: grayscale(0%);
+    -o-filter: grayscale(0%);
+}
+
+.floor-click-overlay, .property-klick-overlay {
+    z-index: 2048;
+    overflow: visible;
+}
+
+
+.floor-click-overlay img {
+    background: none !important;
+    border: 0;
+}
+
+.saturate {
+    filter: grayscale(0%);
+    -webkit-filter: grayscale(0%);
+    -moz-filter: grayscale(0%);
+    -ms-filter: grayscale(0%);
+    -o-filter: grayscale(0%);
+    transition: all 200ms ease-in;
+    opacity: 1;
+}
+
+area {
+    outline: #00FF00 dotted 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+area.disabled {
+    cursor: none;
+}
+
