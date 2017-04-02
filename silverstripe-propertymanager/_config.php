@@ -1,7 +1,7 @@
 <?php
 
 global $project;
-$project = 'propertymanager';
+$project = 'silverstripe-propertymanager';
 
 global $database;
 $database = '';
