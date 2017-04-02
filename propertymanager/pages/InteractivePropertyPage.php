@@ -90,57 +90,16 @@ class InteractivePropertyPage_Controller extends Page_Controller
     {
         Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.js');
         Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery-entwine/dist/jquery.entwine-dist.js');
-
-
         Requirements::javascript(PROPERTYMANAGER_DIR . '/vendor/tooltipster/tooltipster.bundle.min.js');
-
-
         Requirements::javascript(PROPERTYMANAGER_DIR . '/vendor/maphilight/jquery.maphilight.min.js');
         Requirements::css(PROPERTYMANAGER_DIR . '/vendor/tooltipster/tooltipster.bundle.min.css');
-
         Requirements::css(PROPERTYMANAGER_DIR . "/css/propertymanager.css");
 
-
-        /**
-        Requirements::css('https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css');
-        Requirements::javascript('https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js');
-        **/
-
-    /**
-         * $timezone = DateHelper::getUserTimezone($request);
-         *
-         * $timeframeManager = new TimeframeManager($timezone, $this->AllowTimeframeNavigation);
-         * $timeframeManager->setTimeframe($this->Timeframe);
-         *
-         * $startDate = $timeframeManager->getStartDate();
-         * $endDate = $timeframeManager->getEndDate();
-         *
-         * $navigation = $timeframeManager->getNavigationLinks();
-         *
-         * if ($navigation) {
-         * $data = array(
-         * 'TimeframeNavigation' => $this->AllowTimeframeNavigation,
-         * 'CurrentPageLink' => Director::get_current_page()->Link(),
-         * 'PreviousLink' => $navigation->PreviousLink,
-         * 'NextLink' => $navigation->NextLink,
-         * 'CurrentLink' => $navigation->CurrentLink,
-         * );
-         * }
-         *
-         * $events = EventHelper::getGroupedEvents($startDate, $endDate, $this->Grouping, $this->EventArchives(), $this->TagFilter(), $this->ShowMultiDayOnce);
-         * $data['GroupedEvents'] = $events;
-         * $data['EventListTitle'] = 'Events grouped by ' . strtolower(substr($this->Grouping, 2));
-         *
-         *
-         **/
-
-        //$floorImageMaps1 = array();
         $buildings = array();
         $buildingFloors = array();
 
         $dynamicCSS = '';
-
-
+        
         foreach ($this->Location()->Buildings() as $building) {
 
 
@@ -157,14 +116,13 @@ class InteractivePropertyPage_Controller extends Page_Controller
                 'RoofAnimationOffsetX' => $building->RoofAnimationOffsetX,
                 'RoofAnimationOffsetY' => $building->RoofAnimationOffsetY,
             );
-            
 
+            // writing css based on configuration
             $dynamicCSS .= '#building-' . $buildingID . '.building-overlay { left: ' . $building->BuildingOffsetX . 'px; top: ' . $building->BuildingOffsetY . ' } ';
             $dynamicCSS .= '#building-' . $buildingID . ' .floor-overlay.offset{
                 left: ' . $building->AnimationOffsetX . 'px;  top: ' . $building->AnimationOffsetY . 'px; } ';
-
             $dynamicCSS .= '#roof-' . $buildingID . '.building-overlay { left: ' . $building->RoofOffsetX . 'px; top: ' . $building->RoofOffsetY . ' } ';
-            $dynamicCSS .= '#building-' . $buildingID . '.offset .roof-overlay {
+            $dynamicCSS .= '#building-' . $buildingID . ' .roof-overlay.offset {
                 left: ' . $building->RoofAnimationOffsetX . 'px !important;  top: ' . $building->RoofAnimationOffsetY . 'px !important; } ';
 
 
