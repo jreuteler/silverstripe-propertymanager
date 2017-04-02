@@ -45,7 +45,7 @@ class Floor extends DataObject
     public function OverviewImageMapCoordinates()
     {
         if($this->OverviewImage()) {
-            return $this->OverviewImage()->ImageMapCoordinates;
+            return  ImageMapHelper::calculateOffset($this->OverviewImage()->ImageMapCoordinates, ($this->Building()->BuildingOffsetX), ($this->Building()->BuildingOffsetY));
         }
 
         return '';
@@ -54,7 +54,6 @@ class Floor extends DataObject
     public function OverviewImageMapCoordinatesOffset()
     {
         return  ImageMapHelper::calculateOffset($this->OverviewImageMapCoordinates(), $this->Building()->AnimationOffsetX, $this->Building()->AnimationOffsetY);
-        // $this->OverviewImage->ImageMapCoordinates;
     }
 
 
