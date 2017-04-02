@@ -4,8 +4,6 @@ class InteractivePropertyPage extends Page
 {
     public static $db = array();
 
-    //static $defaults = array('EventCount' => 0, 'EventsPerPage' => 0, 'ShowMultiDayOnce' => false);
-
     private static $has_one = array(
         'Location' => 'Location'
     );
@@ -21,54 +19,6 @@ class InteractivePropertyPage extends Page
 
 
         $fields->addFieldToTab('Root.Main', $location);
-
-        /*
-        $eventArchives = CheckboxSetField::create('EventArchives')
-            ->setSource(EventArchive::get()->map('ID', 'Title'))
-            ->setDescription('Filter by selected EventArchives');
-        $fields->addFieldToTab('Root.Main', $eventArchives);
-
-        $fields->addFieldToTab('Root.Main', DropdownField::create(
-            'Grouping',
-            'Grouping',
-            array(
-                'byDay' => 'By day',
-                'byWeek' => 'By week',
-                'byWeekDay' => 'By week/weekday',
-                'byMonth' => 'By month',
-                'byYear' => 'By year',
-            )
-        ));
-
-        $fields->addFieldToTab('Root.Main', DropdownField::create(
-            'Timeframe',
-            'Timeframe',
-            array(
-                'lastMonth' => 'Last Month',
-                'currentMonth' => 'Current Month',
-                'nextMonth' => 'Next Month',
-                'lastYear' => 'Last Year',
-                'currentYear' => 'Current Year',
-                'nextYear' => 'Next Year',
-                'past' => 'Past events',
-                'future' => 'Future events',
-                'all' => 'All events',
-            )
-        ));
-
-        $fields->addFieldToTab('Root.Main', CheckboxField::create(
-            'AllowTimeframeNavigation',
-            'Allow month/year navigation'
-        )->setDescription('Allows the user to navigate through the months/years.'));
-
-        $fields->addFieldToTab('Root.Main', CheckboxField::create(
-            'ShowMultiDayOnce',
-            'Show events that span multiple days only once (on the first day)'
-        ));
-
-        $conf = GridFieldConfig_RelationEditor::create();
-        $fields->addFieldToTab('Root.Main', new GridField('TagFilter', 'Tag filter', $this->TagFilter(), $conf));
-        **/
 
         return $fields;
     }
@@ -94,27 +44,12 @@ class InteractivePropertyPage_Controller extends Page_Controller
         Requirements::css(PROPERTYMANAGER_DIR . '/vendor/tooltipster/tooltipster.bundle.min.css');
         Requirements::css(PROPERTYMANAGER_DIR . "/css/propertymanager.css");
 
-        $buildings = array();
         $buildingFloors = array();
-
         $dynamicCSS = '';
-        
+
         foreach ($this->Location()->Buildings() as $building) {
 
-
             $buildingID = $building->ID;
-
-            @$buildings[$buildingID] = array(
-                'ID' => $buildingID,
-                'OffsetX' => $building->BuildingOffsetX,
-                'OffsetY' => $building->BuildingOffsetY,
-                'AnimationOffsetX' => $building->AnimationOffsetX,
-                'AnimationOffsetY' => $building->AnimationOffsetY,
-                'RoofOffsetX' => $building->RoofOffsetX,
-                'RoofOffsetY' => $building->RoofOffsetY,
-                'RoofAnimationOffsetX' => $building->RoofAnimationOffsetX,
-                'RoofAnimationOffsetY' => $building->RoofAnimationOffsetY,
-            );
 
             // writing css based on configuration
             $dynamicCSS .= '#building-' . $buildingID . '.building-overlay { left: ' . $building->BuildingOffsetX . 'px; top: ' . $building->BuildingOffsetY . ' } ';
@@ -130,8 +65,6 @@ class InteractivePropertyPage_Controller extends Page_Controller
 
         }
 
-        $buildingsJSON = json_encode($buildings);
-        $buildingFloorsJSON = json_encode($buildingFloors);
 
         $data = array(
             'PROPERTYMANAGER_DIR' => PROPERTYMANAGER_DIR,
@@ -139,10 +72,9 @@ class InteractivePropertyPage_Controller extends Page_Controller
             'LocationBackgroundURL' => $this->Location()->BackgroundImage()->URL,
             'LocationBackgroundWidth' => $this->Location()->BackgroundImage()->getWidth(),
             'LocationBackgroundHeight' => $this->Location()->BackgroundImage()->getHeight(),
-            
+
             'DynamicCSS' => $dynamicCSS,
-            'BuildingsJSON' => $buildingsJSON,
-            'BuildingFloorsJSON' => $buildingFloorsJSON,
+            'BuildingFloorsJSON' => json_encode($buildingFloors),
 
             'BuildingsData' => $this->Location()->Buildings()
 
