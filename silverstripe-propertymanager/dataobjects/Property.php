@@ -50,7 +50,7 @@ class Property extends DataObject
     }
     public function BuildingID()
     {
-        if($this->Floor() && $this->Floor()->Building() ) {
+        if($this->Floor() != null && $this->Floor()->Building() != null ) {
             return $this->Floor()->Building()->ID;
         }
 
@@ -60,7 +60,16 @@ class Property extends DataObject
     public function OverviewImageMapCoordinates()
     {
         if($this->OverviewImage()) {
-            return  ImageMapHelper::calculateOffset($this->OverviewImage()->ImageMapCoordinates, ($this->Floor()->Building()->BuildingOffsetX), ($this->Floor()->Building()->BuildingOffsetY));
+
+            $offsetX = 0;
+            $offsetY = 0;
+
+            if( $this->Floor()->Building()!= null ) {
+                $offsetX = $this->Floor()->Building()->BuildingOffsetX;
+                $offsetY = $this->Floor()->Building()->BuildingOffsetY;
+            }
+
+            return  ImageMapHelper::calculateOffset($this->OverviewImage()->ImageMapCoordinates, $offsetX, $offsetY);
 
         }
 
