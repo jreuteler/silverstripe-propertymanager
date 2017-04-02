@@ -49,5 +49,14 @@ class Property extends DataObject
         return 0;
     }
 
+    public function OverviewImageMapCoordinates()
+    {
+        if($this->OverviewImage()) {
+            return  ImageMapHelper::calculateOffset($this->OverviewImage()->ImageMapCoordinates, ($this->Floor()->Building()->BuildingOffsetX), ($this->Floor()->Building()->BuildingOffsetY));
+
+        }
+
+        return '';
+    }
 
 }
