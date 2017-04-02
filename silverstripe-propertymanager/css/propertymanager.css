@@ -87,3 +87,6 @@ area.disabled {
     cursor: none;
 }
 
+#location-navigation .floor.click-area {
+    cursor: pointer;
+}
