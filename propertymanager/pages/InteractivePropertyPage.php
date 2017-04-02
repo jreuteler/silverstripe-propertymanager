@@ -157,40 +157,20 @@ class InteractivePropertyPage_Controller extends Page_Controller
                 'RoofAnimationOffsetX' => $building->RoofAnimationOffsetX,
                 'RoofAnimationOffsetY' => $building->RoofAnimationOffsetY,
             );
+            
 
-            /**
-             * $dynamicCSS .= '#building_'.$buildingID.' .floor_overlay.active{
-             * left: '.$building->BuildingOffsetX.'px;  top: '.$building->BuildingOffsetY.'px; }';
-             **/
-
-
-            $dynamicCSS .= '#building_' . $buildingID . '.building_overlay { left: ' . $building->BuildingOffsetX . 'px; top: ' . $building->BuildingOffsetY . ' } ';
-
-            $dynamicCSS .= '#building_' . $buildingID . ' .floor_overlay.offset{
+            $dynamicCSS .= '#building-' . $buildingID . '.building-overlay { left: ' . $building->BuildingOffsetX . 'px; top: ' . $building->BuildingOffsetY . ' } ';
+            $dynamicCSS .= '#building-' . $buildingID . ' .floor-overlay.offset{
                 left: ' . $building->AnimationOffsetX . 'px;  top: ' . $building->AnimationOffsetY . 'px; } ';
 
-
-            $dynamicCSS .= '#roof_' . $buildingID . '.building_overlay { left: ' . $building->RoofOffsetX . 'px; top: ' . $building->RoofOffsetY . ' } ';
-
-            $dynamicCSS .= '#building_' . $buildingID . '.offset .roof_overlay {
+            $dynamicCSS .= '#roof-' . $buildingID . '.building-overlay { left: ' . $building->RoofOffsetX . 'px; top: ' . $building->RoofOffsetY . ' } ';
+            $dynamicCSS .= '#building-' . $buildingID . '.offset .roof-overlay {
                 left: ' . $building->RoofAnimationOffsetX . 'px !important;  top: ' . $building->RoofAnimationOffsetY . 'px !important; } ';
 
-            /**
-            $dynamicCSS .= '#roof_' . $buildingID . '.roof_overlay.offset{
-                left: ' . $building->RoofAnimationOffsetX . 'px !important;  top: ' . $building->RoofAnimationOffsetY . 'px !important; } ';
-            **/
+
 
             foreach ($building->Floors() as $floor) {
-
                 @$buildingFloors[$buildingID][] = array($floor->ID);
-
-                /**
-                $floorImageMaps[$buildingID][$floor->ID] = array(
-                    'default' => $floor->OverviewImage()->ImageMapCoordinates,
-                    'offset' => ImageMapHelper::calculateOffset($floor->OverviewImage()->ImageMapCoordinates, $building->AnimationOffsetX, $building->AnimationOffsetY)
-
-                );
-                **/
             }
 
         }

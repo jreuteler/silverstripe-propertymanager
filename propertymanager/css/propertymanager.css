@@ -1,8 +1,8 @@
-#location_overview {
+#location-overview {
     position: absolute;
 }
 
-#location_overview img {
+#location-overview img {
     border: 0;
 }
 
@@ -10,12 +10,28 @@
     position: absolute;
 }
 
-#klick_overlay, #groundplan_klick_overlay {
+
+/***
+TODO: make klick_overlay class instead of id to allow multiple buildings at the same time
+
+**/
+
+.floor-click-overlay, .property-klick-overlay {
     z-index: 2048;
     overflow: visible;
 }
 
-#klick_overlay img, #groundplan_klick_overlay img {
+.property-click-overlay {
+    display: none;
+}
+
+.property-click-overlay.active {
+    display: block;
+}
+
+
+
+.floor-click-overlay img, .property-klick-overlay img {
     background: none;
     border: 0;
 }
