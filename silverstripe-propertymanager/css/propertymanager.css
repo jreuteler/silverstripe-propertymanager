@@ -90,3 +90,7 @@ area.disabled {
 #location-navigation .floor.click-area {
     cursor: pointer;
 }
+
+#location-navigation  .floor.click-area.active {
+    font-weight: bold;
+}
