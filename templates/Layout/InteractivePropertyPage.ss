@@ -62,7 +62,9 @@
                     jQuery(this).attr('coords', jQuery(this).data('initial-coords'));
                 });
 
-                var floorsToOffset = getAffectedFloors(buildingID, floorID);
+
+                var floorsToOffset = this.getAffectedFloors(buildingID, floorID);
+
                 floorsToOffset.forEach(function (item, index, array) {
 
                     // set offset class on floor layer
@@ -76,6 +78,7 @@
                 });
 
             }
+
 
         },
 
@@ -96,7 +99,32 @@
         },
         onmouseleave: function () {
             this.desaturate();
-        }
+        },
+
+
+        getAffectedFloors: function (buildingID, triggeredFloorID) {
+
+            var affectedFloors = [];
+            var triggeredFloorFound = false;
+            fLen = buildingFloors[buildingID].length;
+
+            for (i = 0; i < fLen; i++) {
+
+                let floorID = buildingFloors[buildingID][i];
+                if (floorID != 0) {
+                    if (triggeredFloorFound) {
+                        affectedFloors.push(floorID);
+                    }
+                }
+                if (floorID == triggeredFloorID) {
+                    triggeredFloorFound = true;
+                }
+            }
+
+            return affectedFloors;
+        },
+
+
     })
 
 
@@ -118,7 +146,8 @@
     })
 
 
-    function getAffectedFloors(buildingID, triggeredFloorID) {
+    /**
+     function getAffectedFloors(buildingID, triggeredFloorID) {
 
         var affectedFloors = [];
         var triggeredFloorFound = false;
@@ -139,7 +168,8 @@
 
         return affectedFloors;
     }
-    
+     **/
+
 </script>
 
 
