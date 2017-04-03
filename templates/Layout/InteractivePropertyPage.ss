@@ -18,29 +18,6 @@
     // contains a list of floors grouped by building
     var buildingFloors = $BuildingFloorsJSON;
 
-    function getAffectedFloors(buildingID, triggeredFloorID) {
-
-        var affectedFloors = [];
-        var triggeredFloorFound = false;
-        fLen = buildingFloors[buildingID].length;
-
-        for (i = 0; i < fLen; i++) {
-
-            let floorID = buildingFloors[buildingID][i];
-            if (floorID != 0) {
-                if (triggeredFloorFound) {
-                    affectedFloors.push(floorID);
-                }
-            }
-            if (floorID == triggeredFloorID) {
-                triggeredFloorFound = true;
-            }
-        }
-
-        return affectedFloors;
-    }
-
-
     $('.floor.click-area').entwine({
 
         showfloor: function () {
@@ -142,6 +119,30 @@
             this.desaturate();
         }
     })
+
+
+    function getAffectedFloors(buildingID, triggeredFloorID) {
+
+        var affectedFloors = [];
+        var triggeredFloorFound = false;
+        fLen = buildingFloors[buildingID].length;
+
+        for (i = 0; i < fLen; i++) {
+
+            let floorID = buildingFloors[buildingID][i];
+            if (floorID != 0) {
+                if (triggeredFloorFound) {
+                    affectedFloors.push(floorID);
+                }
+            }
+            if (floorID == triggeredFloorID) {
+                triggeredFloorFound = true;
+            }
+        }
+
+        return affectedFloors;
+    }
+
 
 
 </script>
