@@ -50,7 +50,7 @@
             var isActive = this.hasClass('active');
 
             // replace all offset imagemap coordinates with the initial (non-offset) ones
-            jQuery('#building-' + buildingID + ' area.floor.offset').each(function () {
+            jQuery('.building-' + buildingID + ' area.floor.offset').each(function () {
                 jQuery(this).attr('coords', jQuery(this).data('initial-coords'));
             });
 
@@ -61,9 +61,9 @@
             });
 
             // reset all active/offset elements
-            jQuery('#roof-' + buildingID + ' .offset').removeClass('offset'); // reset roof offset
-            jQuery('#building-' + buildingID + ' .offset').removeClass('offset'); // reset offset of all floors
-            jQuery('#building-' + buildingID + ' .active').removeClass('active'); // reset any floor marked as active
+            jQuery('.roof-' + buildingID + ' .offset').removeClass('offset'); // reset roof offset
+            jQuery('.building-' + buildingID + ' .offset').removeClass('offset'); // reset offset of all floors
+            jQuery('.building-' + buildingID + ' .active').removeClass('active'); // reset any floor marked as active
 
 
             if (!isActive) {
@@ -71,13 +71,13 @@
                 this.addClass('active');
 
                 // set roof as offset
-                jQuery('#roof-' + buildingID).addClass('offset');
+                jQuery('.roof-' + buildingID).addClass('offset');
 
                 // set selected floor as active
-                jQuery('#floor-' + floorID).addClass('active');
+                jQuery('.floor-' + floorID).addClass('active');
 
                 // activate floor click layer
-                jQuery('#floor-' + floorID + ' .property-click-overlay').addClass('active');
+                jQuery('.floor-' + floorID + ' .property-click-overlay').addClass('active');
 
                 // set coords of properties (required because a map area can't be individually de-/activated with CSS block:none;)
                 jQuery('area.property.floor-' + floorID).each(function () {
@@ -90,9 +90,9 @@
                 floorsToOffset.forEach(function (item, index, array) {
 
                     // set offset class on floor layer
-                    jQuery('#floor-' + item).addClass('offset');
+                    jQuery('.floor-' + item).addClass('offset');
 
-                    let clickarea = jQuery('#floor-clickarea-' + item);
+                    let clickarea = jQuery('.floor-clickarea-' + item);
 
                     // set offset class on clickarea
                     clickarea.addClass('offset');
@@ -106,10 +106,10 @@
         },
 
         desaturate: function () {
-            jQuery('#floor-' + this.data('floor-id')).removeClass('saturate');
+            jQuery('.floor-' + this.data('floor-id')).removeClass('saturate');
         },
         saturate: function () {
-            jQuery('#floor-' + this.data('floor-id')).addClass('saturate');
+            jQuery('.floor-' + this.data('floor-id')).addClass('saturate');
         },
 
 
@@ -129,10 +129,10 @@
     $('map area.property').entwine({
 
         desaturate: function () {
-            jQuery('#property-' + this.data('property-id')).removeClass('saturate');
+            jQuery('.property-' + this.data('property-id')).removeClass('saturate');
         },
         saturate: function () {
-            jQuery('#property-' + this.data('property-id')).addClass('saturate');
+            jQuery('.property-' + this.data('property-id')).addClass('saturate');
         },
 
         onmouseenter: function () {
@@ -144,26 +144,23 @@
     })
 
 
-
-
 </script>
 
 
 <div id="location-navigation">
     <ul>
-    <% loop $BuildingsData %>
-        <li>$Title</li>
-    <% loop $Floors %>
-        <li class="floor click-area" data-building-id="$BuildingID" data-floor-id="$ID">$Title            </li>
+        <% loop $BuildingsData %>
+            <li class="building-$ID">$Title</li>
 
-        <!--
-        <% loop $Properties %>
-            <li>$Title</li>
-        <% end_loop %>
-        -->
+            <ul class="building-$ID">
 
+                <% loop $Floors %>
+                    <li class="floor floor-{$ID} click-area" data-building-id="$BuildingID"
+                        data-floor-id="$ID">$Title            </li>
+
+                <% end_loop %>
+            </ul>
         <% end_loop %>
-    <% end_loop %>
     </ul>
 
 </div>
@@ -180,10 +177,10 @@
 
     <% loop $BuildingsData %>
 
-        <div id="building-{$ID}" class="building-overlay overlay"
+        <div id="building-{$ID}" class="overlay building-overlay building-{$ID}"
              style="left: {$BuildingOffsetX}px; top: {$BuildingOffsetY}px;">
 
-            <div id="roof-{$ID}" class="overlay roof-overlay"
+            <div id="roof-{$ID}" class="overlay roof-overlay roof-{$ID}"
                  style="background-image: url('$RoofImage.URL'); width: {$RoofImage.Width}px; height: {$RoofImage.Height}px; left: {$RoofOffsetX}px ; top: {$RoofOffsetY}px; z-index: 1024;"></div>
 
             <map id="imagemap" name="imagemap" style="z-index: 1;">
@@ -198,7 +195,7 @@
                               title="$Title"/>
                     <% end_loop %>
 
-                    <area id="floor-clickarea-{$ID}" class="floor click-area" shape="poly"
+                    <area id="floor-clickarea-{$ID}" class="floor click-area floor-clickarea-{$ID}" shape="poly"
                           coords="$OverviewImageMapCoordinates"
                           data-building-id="$BuildingID"
                           data-floor-id="$ID"
@@ -214,12 +211,12 @@
 
             <% loop $Floors %>
 
-                <div id="floor-{$ID}" class="overlay floor-overlay"
+                <div id="floor-{$ID}" class="overlay floor-overlay floor-{$ID}"
                      style="background-image: url('$OverviewImage.URL'); width: {$OverviewImage.Width}px; height: {$OverviewImage.Height}px; z-index: {$ZIndex};"
                      data-z-index="{$ZIndex}">
 
                     <% loop $Properties %>
-                        <div id="property-{$ID}" class="overlay property-overlay"
+                        <div id="property-{$ID}" class="overlay property-overlay property-{$ID}"
                              style="background-image: url('$OverviewImage.URL'); width: {$OverviewImage.Width}px; height: {$OverviewImage.Height}px;">
 
                         </div>
