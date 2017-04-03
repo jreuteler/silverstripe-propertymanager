@@ -47,7 +47,7 @@
 
                 this.addClass('active');
 
-                // set roof as offset
+                // set building as offset
                 jQuery('.building-' + buildingID).addClass('offset');
 
                 // set selected floor as active
@@ -62,9 +62,7 @@
                     jQuery(this).attr('coords', jQuery(this).data('initial-coords'));
                 });
 
-
                 var floorsToOffset = this.getAffectedFloors(buildingID, floorID);
-
                 floorsToOffset.forEach(function (item, index, array) {
 
                     // set offset class on floor layer
