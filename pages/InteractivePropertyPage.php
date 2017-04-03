@@ -52,11 +52,11 @@ class InteractivePropertyPage_Controller extends Page_Controller
             $buildingID = $building->ID;
 
             // writing css based on configuration
-            $dynamicCSS .= '#building-' . $buildingID . '.building-overlay { left: ' . $building->BuildingOffsetX . 'px; top: ' . $building->BuildingOffsetY . ' } ';
-            $dynamicCSS .= '#building-' . $buildingID . ' .floor-overlay.offset{
+            $dynamicCSS .= '.building-' . $buildingID . '.building-overlay { left: ' . $building->BuildingOffsetX . 'px; top: ' . $building->BuildingOffsetY . ' } ';
+            $dynamicCSS .= '.building-' . $buildingID . ' .floor-overlay.offset{
                 left: ' . $building->AnimationOffsetX . 'px;  top: ' . $building->AnimationOffsetY . 'px; } ';
-            $dynamicCSS .= '#roof-' . $buildingID . '.building-overlay { left: ' . $building->RoofOffsetX . 'px; top: ' . $building->RoofOffsetY . ' } ';
-            $dynamicCSS .= '#building-' . $buildingID . ' .roof-overlay.offset {
+            $dynamicCSS .= '.roof-' . $buildingID . '.building-overlay { left: ' . $building->RoofOffsetX . 'px; top: ' . $building->RoofOffsetY . ' } ';
+            $dynamicCSS .= '.building-' . $buildingID . '.offset .roof-overlay {
                 left: ' . $building->RoofAnimationOffsetX . 'px !important;  top: ' . $building->RoofAnimationOffsetY . 'px !important; } ';
 
             foreach ($building->Floors() as $floor) {

@@ -18,29 +18,6 @@
     // contains a list of floors grouped by building
     var buildingFloors = $BuildingFloorsJSON;
 
-    function getAffectedFloors(buildingID, triggeredFloorID) {
-
-        var affectedFloors = [];
-        var triggeredFloorFound = false;
-        fLen = buildingFloors[buildingID].length;
-
-        for (i = 0; i < fLen; i++) {
-
-            let floorID = buildingFloors[buildingID][i];
-            if (floorID != 0) {
-                if (triggeredFloorFound) {
-                    affectedFloors.push(floorID);
-                }
-            }
-            if (floorID == triggeredFloorID) {
-                triggeredFloorFound = true;
-            }
-        }
-
-        return affectedFloors;
-    }
-
-
     $('.floor.click-area').entwine({
 
         showfloor: function () {
@@ -61,8 +38,8 @@
             });
 
             // reset all active/offset elements
-            jQuery('.roof-' + buildingID + ' .offset').removeClass('offset'); // reset roof offset
-            jQuery('.building-' + buildingID + ' .offset').removeClass('offset'); // reset offset of all floors
+            jQuery('.building-' + buildingID + '.offset').removeClass('offset'); // reset building
+            jQuery('.building-' + buildingID + ' .offset').removeClass('offset'); // reset all floors within the building
             jQuery('.building-' + buildingID + ' .active').removeClass('active'); // reset any floor marked as active
 
 
@@ -70,8 +47,8 @@
 
                 this.addClass('active');
 
-                // set roof as offset
-                jQuery('.roof-' + buildingID).addClass('offset');
+                // set building as offset
+                jQuery('.building-' + buildingID).addClass('offset');
 
                 // set selected floor as active
                 jQuery('.floor-' + floorID).addClass('active');
@@ -85,23 +62,21 @@
                     jQuery(this).attr('coords', jQuery(this).data('initial-coords'));
                 });
 
-                //this.coords = this.data("offset-coords");
-                var floorsToOffset = getAffectedFloors(buildingID, floorID);
+                var floorsToOffset = this.getAffectedFloors(buildingID, floorID);
                 floorsToOffset.forEach(function (item, index, array) {
 
                     // set offset class on floor layer
                     jQuery('.floor-' + item).addClass('offset');
-
                     let clickarea = jQuery('.floor-clickarea-' + item);
 
                     // set offset class on clickarea
                     clickarea.addClass('offset');
-
                     // replace coordinates with offset ones
                     clickarea.attr('coords', clickarea.data('offset-coords'));
                 });
 
             }
+
 
         },
 
@@ -122,7 +97,32 @@
         },
         onmouseleave: function () {
             this.desaturate();
-        }
+        },
+
+
+        getAffectedFloors: function (buildingID, triggeredFloorID) {
+
+            var affectedFloors = [];
+            var triggeredFloorFound = false;
+            fLen = buildingFloors[buildingID].length;
+
+            for (i = 0; i < fLen; i++) {
+
+                let floorID = buildingFloors[buildingID][i];
+                if (floorID != 0) {
+                    if (triggeredFloorFound) {
+                        affectedFloors.push(floorID);
+                    }
+                }
+                if (floorID == triggeredFloorID) {
+                    triggeredFloorFound = true;
+                }
+            }
+
+            return affectedFloors;
+        },
+
+
     })
 
 
@@ -143,6 +143,30 @@
         }
     })
 
+
+    /**
+     function getAffectedFloors(buildingID, triggeredFloorID) {
+
+        var affectedFloors = [];
+        var triggeredFloorFound = false;
+        fLen = buildingFloors[buildingID].length;
+
+        for (i = 0; i < fLen; i++) {
+
+            let floorID = buildingFloors[buildingID][i];
+            if (floorID != 0) {
+                if (triggeredFloorFound) {
+                    affectedFloors.push(floorID);
+                }
+            }
+            if (floorID == triggeredFloorID) {
+                triggeredFloorFound = true;
+            }
+        }
+
+        return affectedFloors;
+    }
+     **/
 
 </script>
 
