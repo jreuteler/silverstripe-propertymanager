@@ -2,4 +2,4 @@
 Silverstripe extension to manage properties, with focus on interactive navigation 
 
 
-Frontend-example of interactive property: http://arcoiris.cyon.link/propertymanager/interactiveproperty-example-page/
+In progress example of interactive property (not yet ready for touch devices, as touch events are missing): http://arcoiris.cyon.link/propertymanager/interactiveproperty-example-page/
