@@ -15,6 +15,11 @@
         });
     });
 
+
+    $(document).ready(function() {
+        jQuery('.tooltip').tooltipster();
+    });
+
     // contains a list of floors grouped by building
     var buildingFloors = $BuildingFloorsJSON;
 
@@ -211,10 +216,11 @@
                 <% loop $Floors.Reverse %>
 
                     <% loop $Properties %>
-                        <area id="property-clickarea-{$ID}" class="property floor-{$FloorID}" shape="poly"
+                        <area id="property-clickarea-{$ID}" class="property floor-{$FloorID} tooltip" shape="poly"
                               coords=""
                               data-initial-coords="$OverviewImageMapCoordinates"
                               data-property-id="$ID"
+                              data-tooltip-content="#property-content-{$ID}"
                               href="#" alt="$Title"
                               title="$Title"/>
                     <% end_loop %>
@@ -244,6 +250,7 @@
                              style="background-image: url('$OverviewImage.URL'); width: {$OverviewImage.Width}px; height: {$OverviewImage.Height}px;">
 
                         </div>
+                        <% include EventTooltipContent %>
                     <% end_loop %>
 
                 </div>

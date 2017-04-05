@@ -1,7 +1,6 @@
 <div class="tooltip_templates">
-    <span id="tooltip_content_floor_{$ID}">
-
-        test
-
-    </span>
+    <div id="property-content-$ID" class="property-tooltip-data">
+        <strong>$Title</strong> <br/>
+        <strong>Type: </strong> $Type
+    </div>
 </div>

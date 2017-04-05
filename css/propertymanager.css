@@ -14,6 +14,10 @@ transition: z-index 10ms ease-in;
 transition: color 1000ms ease-in;
 */
 
+.tooltip_templates {
+    display: none;
+}
+
 .overlay {
     position: absolute;
     top: 0px;
