@@ -8,16 +8,15 @@
 
 <script type='text/javascript'>
 
-    // disable click on imagemap areas
-    $(function () {
+
+    $(document).ready(function() {
+        // disable click on imagemap areas
+        jQuery('.tooltip').tooltipster();
+
+        // disable click on imagemap
         jQuery('#imagemap area').on('click', function (e) {
             e.preventDefault();
         });
-    });
-
-
-    $(document).ready(function() {
-        jQuery('.tooltip').tooltipster();
     });
 
     // contains a list of floors grouped by building
@@ -147,32 +146,7 @@
             this.desaturate();
         }
     })
-
-
-    /**
-     function getAffectedFloors(buildingID, triggeredFloorID) {
-
-        var affectedFloors = [];
-        var triggeredFloorFound = false;
-        fLen = buildingFloors[buildingID].length;
-
-        for (i = 0; i < fLen; i++) {
-
-            let floorID = buildingFloors[buildingID][i];
-            if (floorID != 0) {
-                if (triggeredFloorFound) {
-                    affectedFloors.push(floorID);
-                }
-            }
-            if (floorID == triggeredFloorID) {
-                triggeredFloorFound = true;
-            }
-        }
-
-        return affectedFloors;
-    }
-     **/
-
+    
 </script>
 
 
@@ -248,9 +222,12 @@
                     <% loop $Properties %>
                         <div id="property-{$ID}" class="overlay property-overlay property-{$ID}"
                              style="background-image: url('$OverviewImage.URL'); width: {$OverviewImage.Width}px; height: {$OverviewImage.Height}px;">
-
                         </div>
+
                         <% include EventTooltipContent %>
+
+
+
                     <% end_loop %>
 
                 </div>
